@@ -19,5 +19,5 @@ public class Pet {
     private String age;
     private String doB;
     private int weight;
-
+    private String imageSrc;
 }
