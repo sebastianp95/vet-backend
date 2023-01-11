@@ -7,6 +7,8 @@ import java.util.List;
 public interface PetService {
     List<Pet> findAll();
 
+    List<Pet> findAllByUser();
+
     Pet save(Pet newPet);
 
     Pet findById(Long id);

@@ -1,6 +1,6 @@
 package com.dev.vetbackend.exception;
 
-public class PetNotFoundException extends Exception {
+public class PetNotFoundException extends RuntimeException {
     //Constructor with message
     public PetNotFoundException(String message) {
         super(message);

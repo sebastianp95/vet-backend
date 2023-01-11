@@ -1,12 +1,10 @@
 package com.dev.vetbackend.controller;
 
 import com.dev.vetbackend.entity.Pet;
-import com.dev.vetbackend.entity.User;
 import com.dev.vetbackend.services.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,19 +25,15 @@ public class PetController {
     private final PetService petService;
 
     @GetMapping("")
-    List<Pet> all() {
-        return petService.findAll();
+    public ResponseEntity<?> all() {
+        List<Pet> all = petService.findAllByUser();
+        return ResponseEntity.ok(all);
     }
 
-//    @GetMapping("")
-//    public ResponseEntity<?> all(@AuthenticationPrincipal User user) {
-//        List<Pet> all = petService.findAll();
-//        return ResponseEntity.ok(all);
-//    }
-
     @PostMapping("")
-    Pet newPet(@RequestBody Pet newPet) {
-        return petService.save(newPet);
+    public ResponseEntity<?> createPet(@RequestBody Pet newPet) {
+        Pet pet = petService.save(newPet);
+        return ResponseEntity.ok(pet);
     }
 
     @GetMapping("/{id}")

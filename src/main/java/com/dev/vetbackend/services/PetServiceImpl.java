@@ -1,8 +1,12 @@
 package com.dev.vetbackend.services;
 
 import com.dev.vetbackend.entity.Pet;
+import com.dev.vetbackend.entity.User;
+import com.dev.vetbackend.exception.PetNotFoundException;
 import com.dev.vetbackend.repository.PetRepository;
+import com.dev.vetbackend.security.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 public class PetServiceImpl implements PetService {
 
+    @Autowired
     private final PetRepository repository;
+    @Autowired
+    private final UserDetailServiceImpl userDetailServiceImpl;
+
 
     @Override
     public List<Pet> findAll() {
@@ -19,13 +27,23 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    public List<Pet> findAllByUser() {
+        User user = userDetailServiceImpl.getAuthenticatedUser();
+        return repository.findAllByUser(user);
+    }
+
+    @Override
     public Pet save(Pet newPet) {
-        return repository.save(newPet);
+        newPet.setUser(userDetailServiceImpl.getAuthenticatedUser());
+        Pet pet = repository.save(newPet);
+        pet.getUser().setPassword(null);
+
+        return pet;
     }
 
     @Override
     public Pet findById(Long id) {
-        Pet pet = repository.findById(id).orElseThrow(() -> new RuntimeException());
+        Pet pet = repository.findById(id).orElseThrow(() -> new PetNotFoundException("La mascota no existe"));
         return pet;
     }
 
