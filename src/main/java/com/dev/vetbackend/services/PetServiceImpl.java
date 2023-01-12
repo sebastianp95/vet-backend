@@ -2,6 +2,7 @@ package com.dev.vetbackend.services;
 
 import com.dev.vetbackend.entity.Pet;
 import com.dev.vetbackend.entity.User;
+import com.dev.vetbackend.entity.Vaccine;
 import com.dev.vetbackend.exception.PetNotFoundException;
 import com.dev.vetbackend.repository.PetRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,14 +31,21 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<Pet> findAllByUser() {
         User user = userDetailServiceImpl.getAuthenticatedUser();
-        return repository.findAllByUser(user);
+        List<Pet> pets = repository.findAllByUser(user).stream()
+                .map(pet -> {
+                    pet.setUser(null);
+                    return pet;
+                })
+                .collect(Collectors.toList());
+
+        return pets;
     }
 
     @Override
     public Pet save(Pet newPet) {
         newPet.setUser(userDetailServiceImpl.getAuthenticatedUser());
         Pet pet = repository.save(newPet);
-        pet.getUser().setPassword(null);
+        pet.setUser(null);
 
         return pet;
     }
