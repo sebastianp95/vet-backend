@@ -28,6 +28,7 @@ public class VaccineController {
         return ResponseEntity.ok(all);
     }
 
+    //EMpty commit
     @PostMapping("")
     public ResponseEntity<?> createVaccine(@RequestBody Vaccine newVaccine) {
         Vaccine vaccine = vaccineService.save(newVaccine);
