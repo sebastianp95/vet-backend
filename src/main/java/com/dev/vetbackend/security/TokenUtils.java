@@ -4,18 +4,24 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
+@Component
 public class TokenUtils {
-    private final static String ACCESS_TOKEN_SECRET = getAccessTokenSecretKey();
+
+    private static String ACCESS_TOKEN_SECRET;
+    @Autowired
+    public TokenUtils(@Value("${jwt.secret}") String prop) {
+        this.ACCESS_TOKEN_SECRET = prop;
+    }
     private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L;
 
     public static String createToken(String name, String email) {
@@ -52,14 +58,4 @@ public class TokenUtils {
 
     }
 
-    public static String getAccessTokenSecretKey() {
-        Properties props = new Properties();
-        try {
-            props.load(new FileInputStream("src/main/resources/application.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String secretKey = props.getProperty("jwt.secret");
-        return secretKey;
-    }
 }
