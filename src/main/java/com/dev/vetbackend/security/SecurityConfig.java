@@ -1,7 +1,6 @@
 package com.dev.vetbackend.security;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -24,10 +26,25 @@ public class SecurityConfig {
 
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("http://localhost:3000/", "/login")
+//                        .allowedMethods("*","GET", "OPTIONS", "POST")
+//                        .allowedHeaders("*", "Authorization");
+//            }
+//        };
+//    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             AuthenticationManager authManager) throws Exception {
+
+//        Alternative to Implement Roles...
 //        return http
 //                .authorizeHttpRequests((requests) -> requests
 //                        .requestMatchers("/", "/home").permitAll()
@@ -42,6 +59,8 @@ public class SecurityConfig {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
 
         return http
+                .cors().and()
+//                .cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and()
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .anyRequest().authenticated()
@@ -53,8 +72,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 
-    }
 
+    }
     @Bean
     AuthenticationManager authManager(HttpSecurity http) throws Exception {
         return http
