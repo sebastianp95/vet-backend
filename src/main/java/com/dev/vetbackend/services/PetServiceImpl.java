@@ -1,17 +1,17 @@
 package com.dev.vetbackend.services;
 
 import com.dev.vetbackend.entity.Pet;
+import com.dev.vetbackend.entity.PetVaccine;
 import com.dev.vetbackend.entity.User;
-import com.dev.vetbackend.entity.Vaccine;
 import com.dev.vetbackend.exception.PetNotFoundException;
 import com.dev.vetbackend.repository.PetRepository;
+import com.dev.vetbackend.repository.PetVaccineRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +19,8 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     private final PetRepository repository;
+    @Autowired
+    private final PetVaccineRepository petVaccineRepository;
     @Autowired
     private final UserDetailServiceImpl userDetailServiceImpl;
 
@@ -31,12 +33,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<Pet> findAllByUser() {
         User user = userDetailServiceImpl.getAuthenticatedUser();
-        List<Pet> pets = repository.findAllByUser(user).stream()
-                .map(pet -> {
-                    pet.setUser(null);
-                    return pet;
-                })
-                .collect(Collectors.toList());
+        List<Pet> pets = repository.findAllByUser(user);
 
         return pets;
     }
@@ -45,7 +42,6 @@ public class PetServiceImpl implements PetService {
     public Pet save(Pet newPet) {
         newPet.setUser(userDetailServiceImpl.getAuthenticatedUser());
         Pet pet = repository.save(newPet);
-        pet.setUser(null);
 
         return pet;
     }
@@ -73,5 +69,22 @@ public class PetServiceImpl implements PetService {
     @Override
     public void deleteById(Long id) {
 
+    }
+
+    //    PetVaccine logic
+    @Override
+    public List<PetVaccine> findVaccinesByPetId(Long id) {
+
+        List<PetVaccine> list = petVaccineRepository.findByPetId(id);
+
+        return list;
+    }
+
+    @Override
+    public PetVaccine saveVaccinationRecord(PetVaccine newRecord) {
+
+        PetVaccine petVaccine = petVaccineRepository.save(newRecord);
+
+        return petVaccine;
     }
 }

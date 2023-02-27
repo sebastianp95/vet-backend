@@ -1,6 +1,7 @@
 package com.dev.vetbackend.controller;
 
 import com.dev.vetbackend.entity.Pet;
+import com.dev.vetbackend.entity.PetVaccine;
 import com.dev.vetbackend.services.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,18 @@ public class PetController {
     Pet one(@PathVariable Long id) {
         return petService.findById(id);
     }
+
+    @GetMapping("/vaccineCard/{id}")
+    public ResponseEntity<?> vaccines(@PathVariable Long id) {
+        List<PetVaccine> vaccinationCard = petService.findVaccinesByPetId(id);
+        return ResponseEntity.ok(vaccinationCard);
+    }
+
+    @PostMapping("/vaccineCard")
+    public void createVaccinesCardRecord(@RequestBody PetVaccine newRecord) {
+        PetVaccine record = petService.saveVaccinationRecord(newRecord);
+    }
+
 
     @PutMapping("/{id}")
     Pet editPet(@RequestBody Pet newPet, @PathVariable Long id) {
