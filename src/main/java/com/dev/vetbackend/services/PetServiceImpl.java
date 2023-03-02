@@ -57,14 +57,25 @@ public class PetServiceImpl implements PetService {
         return repository.findById(id)
                 .map(pet -> {
                     pet.setName(newPet.getName());
-//                    pet.setRole(newPet.getRole());
-                    return repository.save(newPet);
+                    pet.setAge(newPet.getAge());
+                    pet.setBreed(newPet.getBreed());
+                    pet.setOwnerId(newPet.getOwnerId());
+                    pet.setDoB(newPet.getDoB());
+                    pet.setWeight(newPet.getWeight());
+                    pet.setImageSrc(newPet.getImageSrc());
+
+                    Pet updatedPet = repository.save(pet);
+                    if (updatedPet == null) {
+//                        logger.error("Error updating pet with id " + id);
+//                        replace for updateExpection
+                        throw new PetNotFoundException("Error updating pet with id " + id);
+                    }
+//                    logger.info("Pet with id " + id + " updated successfully");
+                    return updatedPet;
                 })
-                .orElseGet(() -> {
-                    newPet.setId(id);
-                    return repository.save(newPet);
-                });
+                .orElseThrow(() -> new PetNotFoundException("Pet with id " + id + " not found"));
     }
+
 
     @Override
     public void deleteById(Long id) {
