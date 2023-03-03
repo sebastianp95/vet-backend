@@ -37,6 +37,10 @@ public class PetController {
         return ResponseEntity.ok(pet);
     }
 
+    @GetMapping("/{id}")
+    Pet one(@PathVariable Long id) {
+        return petService.findById(id);
+    }
 
     @PutMapping("/{id}")
     Pet editPet(@RequestBody Pet newPet, @PathVariable Long id) {
@@ -49,11 +53,6 @@ public class PetController {
     }
 
 //    VACCINATION CONTROLLERS
-    @GetMapping("/{id}")
-    Pet one(@PathVariable Long id) {
-        return petService.findById(id);
-    }
-
     @GetMapping("/vaccineCard/{id}")
     public ResponseEntity<?> vaccines(@PathVariable Long id) {
         List<PetVaccine> vaccinationCard = petService.findVaccinesByPetId(id);

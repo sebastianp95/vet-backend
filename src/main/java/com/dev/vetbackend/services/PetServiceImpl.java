@@ -79,7 +79,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public void deleteById(Long id) {
-
+        repository.deleteById(Math.toIntExact(id));
     }
 
     //    PetVaccine logic
