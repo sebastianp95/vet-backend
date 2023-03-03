@@ -37,6 +37,18 @@ public class PetController {
         return ResponseEntity.ok(pet);
     }
 
+
+    @PutMapping("/{id}")
+    Pet editPet(@RequestBody Pet newPet, @PathVariable Long id) {
+        return petService.update(id, newPet);
+    }
+
+    @DeleteMapping("/{id}")
+    void deletePet(@PathVariable Long id) {
+        petService.deleteById(id);
+    }
+
+//    VACCINATION CONTROLLERS
     @GetMapping("/{id}")
     Pet one(@PathVariable Long id) {
         return petService.findById(id);
@@ -54,13 +66,4 @@ public class PetController {
     }
 
 
-    @PutMapping("/{id}")
-    Pet editPet(@RequestBody Pet newPet, @PathVariable Long id) {
-        return petService.update(id, newPet);
-    }
-
-    @DeleteMapping("/{id}")
-    void deletePet(@PathVariable Long id) {
-        petService.deleteById(id);
-    }
 }
