@@ -64,5 +64,10 @@ public class PetController {
         PetVaccine record = petService.saveVaccinationRecord(newRecord);
     }
 
+    @DeleteMapping("/vaccineCard/{petId}/{vaccineId}")
+    void deleteVaccinationRecord(@PathVariable Long petId, @PathVariable Long vaccineId) {
+        petService.deleteVaccinationRecordById(petId, vaccineId);
+    }
+
 
 }

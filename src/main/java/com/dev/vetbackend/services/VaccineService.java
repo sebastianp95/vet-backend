@@ -9,4 +9,6 @@ public interface VaccineService {
     List<Vaccine> findAllByUser();
 
     Vaccine save(Vaccine newVaccine);
+
+    void deleteById(Long id);
 }

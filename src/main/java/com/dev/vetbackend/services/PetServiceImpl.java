@@ -98,4 +98,9 @@ public class PetServiceImpl implements PetService {
 
         return petVaccine;
     }
+
+    @Override
+    public void deleteVaccinationRecordById(Long petId, Long vaccineId) {
+        petVaccineRepository.deletePetVaccineByPetIdAndVaccineId(petId, String.valueOf(vaccineId));
+    }
 }

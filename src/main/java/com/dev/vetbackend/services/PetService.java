@@ -21,4 +21,6 @@ public interface PetService {
     PetVaccine saveVaccinationRecord(PetVaccine newRecord);
 
     List<PetVaccine> findVaccinesByPetId(Long id);
+
+    void deleteVaccinationRecordById(Long petId, Long vaccineId);
 }

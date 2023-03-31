@@ -46,4 +46,8 @@ public class VaccineServiceImpl implements VaccineService {
 
         return vaccine;
     }
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(Math.toIntExact(id));
+    }
 }
