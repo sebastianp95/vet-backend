@@ -1,8 +1,8 @@
 package com.dev.vetbackend.services;
 
 import com.dev.vetbackend.entity.User;
-import com.dev.vetbackend.entity.Vaccine;
-import com.dev.vetbackend.repository.VaccineRepository;
+import com.dev.vetbackend.entity.Vermifuge;
+import com.dev.vetbackend.repository.VermifugeRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,37 +13,37 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class VaccineServiceImpl implements VaccineService {
+public class VermifugeServiceImpl implements VermifugeService {
 
     @Autowired
-    private final VaccineRepository repository;
+    private final VermifugeRepository repository;
     @Autowired
     private final UserDetailServiceImpl userDetailServiceImpl;
 
 //    @Override
-//    public List<Vaccine> findAll() {
+//    public List<Vermifuge> findAll() {
 //        return repository.findAll();
 //    }
 
     @Override
-    public List<Vaccine> findAllByUser() {
+    public List<Vermifuge> findAllByUser() {
         User user = userDetailServiceImpl.getAuthenticatedUser();
-        List<Vaccine> vaccines = repository.findAllByUser(user).stream()
-                .map(vaccine -> {
-                    vaccine.setUser(null);
-                    return vaccine;
+        List<Vermifuge> vermifuges = repository.findAllByUser(user).stream()
+                .map(vermifuge -> {
+                    vermifuge.setUser(null);
+                    return vermifuge;
                 })
                 .collect(Collectors.toList());
-        return vaccines;
+        return vermifuges;
     }
 
     @Override
-    public Vaccine save(Vaccine newVaccine) {
-        newVaccine.setUser(userDetailServiceImpl.getAuthenticatedUser());
-        Vaccine vaccine = repository.save(newVaccine);
-        vaccine.setUser(null);
+    public Vermifuge save(Vermifuge newVermifuge) {
+        newVermifuge.setUser(userDetailServiceImpl.getAuthenticatedUser());
+        Vermifuge vermifuge = repository.save(newVermifuge);
+        vermifuge.setUser(null);
 
-        return vaccine;
+        return vermifuge;
     }
     @Override
     public void deleteById(Long id) {

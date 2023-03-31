@@ -1,7 +1,7 @@
 package com.dev.vetbackend.controller;
 
-import com.dev.vetbackend.entity.Vaccine;
-import com.dev.vetbackend.services.VaccineService;
+import com.dev.vetbackend.entity.Vermifuge;
+import com.dev.vetbackend.services.VermifugeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,28 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vaccines")
+@RequestMapping("/api/vermifuge")
 @AllArgsConstructor
-public class VaccineController {
+public class VermifugeController {
 
     @Autowired
-    public final VaccineService vaccineService;
+    public final VermifugeService vermifugeService;
 
     @GetMapping("")
     public ResponseEntity<?> all() {
-        List<Vaccine> all = vaccineService.findAllByUser();
+        List<Vermifuge> all = vermifugeService.findAllByUser();
         return ResponseEntity.ok(all);
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createVaccine(@RequestBody Vaccine newVaccine) {
-        Vaccine vaccine = vaccineService.save(newVaccine);
-        return ResponseEntity.ok(vaccine);
+    public ResponseEntity<?> createVermifuge(@RequestBody Vermifuge newVermifuge) {
+        Vermifuge vermifuge = vermifugeService.save(newVermifuge);
+        return ResponseEntity.ok(vermifuge);
     }
 
     @DeleteMapping("/{id}")
-    void deleteVaccine(@PathVariable Long id) {
-        vaccineService.deleteById(id);
+    void deleteVermifuge(@PathVariable Long id) {
+        vermifugeService.deleteById(id);
     }
 
 }
