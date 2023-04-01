@@ -2,6 +2,7 @@ package com.dev.vetbackend.controller;
 
 import com.dev.vetbackend.entity.Pet;
 import com.dev.vetbackend.entity.PetVaccine;
+import com.dev.vetbackend.entity.PetVermifuge;
 import com.dev.vetbackend.services.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,23 @@ public class PetController {
     @DeleteMapping("/vaccineCard/{petId}/{vaccineId}")
     void deleteVaccinationRecord(@PathVariable Long petId, @PathVariable Long vaccineId) {
         petService.deleteVaccinationRecordById(petId, vaccineId);
+    }
+
+    //    VERMIFUGE CONTROLLERS
+    @GetMapping("/vermifugeCard/{id}")
+    public ResponseEntity<?> vermifuge(@PathVariable Long id) {
+        List<PetVermifuge> vermifugeCard = petService.findVermifugesByPetId(id);
+        return ResponseEntity.ok(vermifugeCard);
+    }
+
+    @PostMapping("/vermifugeCard")
+    public void createVermifugesCardRecord(@RequestBody PetVermifuge newRecord) {
+        PetVermifuge record = petService.saveVermifugeRecord(newRecord);
+    }
+
+    @DeleteMapping("/vermifugeCard/{petId}/{vermifugeId}")
+    void deleteVermifugeRecord(@PathVariable Long petId, @PathVariable Long vermifugeId) {
+        petService.deleteVermifugeRecordById(petId, vermifugeId);
     }
 
 

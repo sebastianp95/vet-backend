@@ -2,10 +2,12 @@ package com.dev.vetbackend.services;
 
 import com.dev.vetbackend.entity.Pet;
 import com.dev.vetbackend.entity.PetVaccine;
+import com.dev.vetbackend.entity.PetVermifuge;
 import com.dev.vetbackend.entity.User;
 import com.dev.vetbackend.exception.PetNotFoundException;
 import com.dev.vetbackend.repository.PetRepository;
 import com.dev.vetbackend.repository.PetVaccineRepository;
+import com.dev.vetbackend.repository.PetVermifugeRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class PetServiceImpl implements PetService {
     private final PetRepository repository;
     @Autowired
     private final PetVaccineRepository petVaccineRepository;
+
+    @Autowired
+    private final PetVermifugeRepository petVermifugeRepository;
     @Autowired
     private final UserDetailServiceImpl userDetailServiceImpl;
 
@@ -82,7 +87,7 @@ public class PetServiceImpl implements PetService {
         repository.deleteById(Math.toIntExact(id));
     }
 
-    //    PetVaccine logic
+    //    PETVACCINE LOGIC
     @Override
     public List<PetVaccine> findVaccinesByPetId(Long id) {
 
@@ -102,5 +107,27 @@ public class PetServiceImpl implements PetService {
     @Override
     public void deleteVaccinationRecordById(Long petId, Long vaccineId) {
         petVaccineRepository.deletePetVaccineByPetIdAndVaccineId(petId, String.valueOf(vaccineId));
+    }
+
+    //    PETVERMIFUGE LOGIC
+    @Override
+    public List<PetVermifuge> findVermifugesByPetId(Long id) {
+
+        List<PetVermifuge> list = petVermifugeRepository.findByPetId(id);
+
+        return list;
+    }
+
+    @Override
+    public PetVermifuge saveVermifugeRecord(PetVermifuge newRecord) {
+
+        PetVermifuge petVermifuge = petVermifugeRepository.save(newRecord);
+
+        return petVermifuge;
+    }
+
+    @Override
+    public void deleteVermifugeRecordById(Long petId, Long vermifugeId) {
+        petVermifugeRepository.deletePetVermifugeByPetIdAndVermifugeId(petId, String.valueOf(vermifugeId));
     }
 }
