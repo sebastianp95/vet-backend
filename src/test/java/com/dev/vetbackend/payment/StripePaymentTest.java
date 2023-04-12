@@ -1,5 +1,6 @@
 package com.dev.vetbackend.payment;
 
+import com.dev.vetbackend.services.StripeService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
@@ -19,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class StripePaymentTest {
     @Autowired
-    private StripePayment stripePayment;
+    private StripeService stripeService;
     @Test
     public void testChargeCreditCard_successfulPayment() throws StripeException {
        String token = "tok_visa"; // replace with valid test token
         int amount = 1000; // replace with valid amount
         String currency = "usd";
-        Charge charge = stripePayment.chargeCreditCard(token, amount, currency);
+        Charge charge = stripeService.chargeCreditCard(token, amount, currency);
         assertNotNull(charge);
         assertEquals("succeeded", charge.getStatus());
     }
@@ -36,7 +37,7 @@ public class StripePaymentTest {
         String currency = "usd";
 
         try {
-            stripePayment.chargeCreditCard(token, amount, currency);
+            stripeService.chargeCreditCard(token, amount, currency);
             fail("Expected a StripeException to be thrown");
         } catch (StripeException e) {
             // Exception was thrown, test passes
@@ -51,27 +52,27 @@ public class StripePaymentTest {
 
         // Execute the method and assert that it throws a StripeException
         assertThrows(StripeException.class, () -> {
-            stripePayment.chargeCreditCard(token, amount, currency);
+            stripeService.chargeCreditCard(token, amount, currency);
         });
     }
 
     @Test
     public void testChargeCreditCardInvalidAmount() {
         assertThrows(StripeException.class, () -> {
-            stripePayment.chargeCreditCard("valid_token", -1000, "USD");
+            stripeService.chargeCreditCard("valid_token", -1000, "USD");
         });
     }
 
     @Test
     public void testChargeCreditCardInvalidCurrency() {
         assertThrows(StripeException.class, () -> {
-            stripePayment.chargeCreditCard("valid_token", 1000, "invalid_currency");
+            stripeService.chargeCreditCard("valid_token", 1000, "invalid_currency");
         });
     }
 
     @Test
     public void testChargeCreditCardValidParams() throws StripeException {
-        Charge charge = stripePayment.chargeCreditCard("tok_visa", 1000, "USD");
+        Charge charge = stripeService.chargeCreditCard("tok_visa", 1000, "USD");
         assertNotNull(charge.getId());
         assertEquals(charge.getAmount(), 1000);
         assertTrue(charge.getCurrency().equalsIgnoreCase("USD"));

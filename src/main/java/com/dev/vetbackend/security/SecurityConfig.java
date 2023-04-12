@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(new AntPathRequestMatcher("/api/register")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/stripe-webhook")).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
