@@ -1,11 +1,14 @@
 package com.dev.vetbackend.controller;
 
+import com.dev.vetbackend.entity.ErrorResponse;
 import com.dev.vetbackend.entity.Pet;
 import com.dev.vetbackend.entity.PetVaccine;
 import com.dev.vetbackend.entity.PetVermifuge;
+import com.dev.vetbackend.exception.CustomException;
 import com.dev.vetbackend.services.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +37,14 @@ public class PetController {
 
     @PostMapping("")
     public ResponseEntity<?> createPet(@RequestBody Pet newPet) {
-        Pet pet = petService.save(newPet);
-        return ResponseEntity.ok(pet);
+        try {
+            Pet pet = petService.save(newPet);
+            return ResponseEntity.ok(pet);
+        } catch (CustomException e) {
+            // Return the error response as a ResponseEntity
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/{id}")
@@ -53,7 +62,7 @@ public class PetController {
         petService.deleteById(id);
     }
 
-//    VACCINATION CONTROLLERS
+    //    VACCINATION CONTROLLERS
     @GetMapping("/vaccineCard/{id}")
     public ResponseEntity<?> vaccines(@PathVariable Long id) {
         List<PetVaccine> vaccinationCard = petService.findVaccinesByPetId(id);

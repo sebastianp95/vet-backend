@@ -1,17 +1,25 @@
 package com.dev.vetbackend.services;
 
+import com.dev.vetbackend.entity.User;
+import com.dev.vetbackend.security.UserDetailServiceImpl;
+import com.dev.vetbackend.security.UserDetailsImpl;
 import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.Customer;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.StripeObject;
+import com.stripe.model.Plan;
+import com.stripe.model.Subscription;
+import com.stripe.model.SubscriptionItem;
 import com.stripe.net.Webhook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,13 +27,25 @@ public class StripeService {
 
     @Value("${stripe.secret}")
     private String API_SECRET_KEY;
-
     @Value("${stripe.secret.test}")
     private String API_SECRET_KEY_TEST;
-
     @Value("${stripe.webhook.secret}")
     private String STRIPE_WEBHOOK_SECRET;
+    @Value("${stripe.plan.basic}")
+    private String BASIC_PLAN_PRODUCT_ID;
+    @Value("${stripe.plan.plus}")
+    private String PLUS_PLAN_PRODUCT_ID;
+    @Value("${stripe.plan.premium}")
+    private String PREMIUM_PLAN_PRODUCT_ID;
+    private final UserDetailServiceImpl userDetailServiceImpl;
 
+    @Autowired
+    public StripeService(UserDetailServiceImpl userDetailServiceImpl) {
+        this.userDetailServiceImpl = userDetailServiceImpl;
+
+    }
+
+    // This method is currently not in use but is preserved for potential future requirements.
     public Charge chargeCreditCard(String token, int amount, String currency) throws StripeException {
         Stripe.apiKey = API_SECRET_KEY;
 
@@ -38,7 +58,8 @@ public class StripeService {
         return Charge.create(chargeParams);
     }
 
-    public  String createPaymentIntent(int amount, String currency) throws StripeException {
+    // This method is currently not in use but is preserved for potential future requirements.
+    public String createPaymentIntent(int amount, String currency) throws StripeException {
         Stripe.apiKey = API_SECRET_KEY;
 
         Map<String, Object> params = new HashMap<>();
@@ -64,33 +85,77 @@ public class StripeService {
             throw new RuntimeException("Invalid payload");
         }
 
-        StripeObject stripeObject = event.getDataObjectDeserializer().getObject().orElse(null);
-        if (stripeObject == null) {
-            // Handle deserialization failure or throw an exception
-        }
 
         handleEvent(event);
     }
 
     public void handleEvent(Event event) {
-        // Process the event based on its type
+
         switch (event.getType()) {
             case "charge.succeeded":
                 // Handle a successful charge
-                System.out.println("success");
                 break;
             case "customer.subscription.created":
-                // Handle a new subscription
-                System.out.println("subscription");
+                handleNewSubscription(event);
+                break;
+            case "checkout.session.completed":
+//            handle
                 break;
             case "payment_intent.succeeded":
-                // Define and call a function to handle the payment_intent.succeeded event
-                System.out.println("hello?");
+//                handle
                 break;
-            // Add more cases for other event types
             default:
                 System.out.println("Unhandled event type: " + event.getType());
         }
     }
 
+    private void handleNewSubscription(Event event) {
+        Subscription subscription = (Subscription) event.getDataObjectDeserializer().getObject().orElse(null);
+        if (subscription != null) {
+            String subscriptionId = subscription.getId();
+            String customerId = subscription.getCustomer();
+
+            // Fetch the customer object to get the user's email
+            Customer customer = getCustomer(customerId);
+            String email = customer.getEmail();
+            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailServiceImpl.loadUserByUsername(email);
+            User user = userDetails.getUser();
+
+            String plan = getPlanName(subscription);
+
+
+            userDetailServiceImpl.updateUserSubscription(user, subscriptionId, plan, "active");
+        }
+    }
+
+    private Customer getCustomer(String customerId) {
+        try {
+            return Customer.retrieve(customerId);
+        } catch (StripeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getPlanName(Subscription subscription) {
+        List<SubscriptionItem> subscriptionItems = subscription.getItems().getData();
+        if (!subscriptionItems.isEmpty()) {
+            Plan subscriptionPlan = subscriptionItems.get(0).getPlan();
+            String productId = subscriptionPlan.getProduct();
+
+            if (productId == null) {
+                return null;
+            }
+            if (BASIC_PLAN_PRODUCT_ID.equals(productId)) {
+                return "basic";
+            } else if (PLUS_PLAN_PRODUCT_ID.equals(productId)) {
+                return "plus";
+            } else if (PREMIUM_PLAN_PRODUCT_ID.equals(productId)) {
+                return "premium";
+            } else {
+                // Handle unknown plan
+                System.out.println("Unknown plan");
+            }
+        }
+        return null;
+    }
 }

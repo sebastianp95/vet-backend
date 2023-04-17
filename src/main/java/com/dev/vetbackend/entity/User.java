@@ -25,7 +25,9 @@ public class User {
     private String name;
     private String email;
     private String password;
-    
+    private String status;
+    private String subscriptionId;
+    private String planId;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

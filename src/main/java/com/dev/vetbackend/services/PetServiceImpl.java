@@ -1,9 +1,11 @@
 package com.dev.vetbackend.services;
 
+import com.dev.vetbackend.constants.SubscriptionPlan;
 import com.dev.vetbackend.entity.Pet;
 import com.dev.vetbackend.entity.PetVaccine;
 import com.dev.vetbackend.entity.PetVermifuge;
 import com.dev.vetbackend.entity.User;
+import com.dev.vetbackend.exception.CustomException;
 import com.dev.vetbackend.exception.PetNotFoundException;
 import com.dev.vetbackend.repository.PetRepository;
 import com.dev.vetbackend.repository.PetVaccineRepository;
@@ -44,12 +46,23 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet save(Pet newPet) {
-        newPet.setUser(userDetailServiceImpl.getAuthenticatedUser());
-        Pet pet = repository.save(newPet);
+    public Pet save(Pet newPet) throws CustomException{
+        User user = userDetailServiceImpl.getAuthenticatedUser();
+        SubscriptionPlan plan = SubscriptionPlan.fromPlanId(user.getPlanId());
 
+        int currentPetCount = 0;
+        if (plan != SubscriptionPlan.PREMIUM) {
+            currentPetCount = repository.countByUser(user);
+        }
+        if (currentPetCount >= plan.getMaxPetsAllowed()) {
+            throw new CustomException("You have reached the maximum number of pets allowed for your subscription plan.");
+        }
+
+        newPet.setUser(user);
+        Pet pet = repository.save(newPet);
         return pet;
     }
+
 
     @Override
     public Pet findById(Long id) {

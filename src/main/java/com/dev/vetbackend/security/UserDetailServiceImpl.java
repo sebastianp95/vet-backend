@@ -66,4 +66,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
         // save the new user to the repository
         userRepository.save(user);
     }
+
+    public void updateUserSubscription(User user, String subscriptionId, String planId, String status) {
+        // Update the user's subscription information
+        user.setSubscriptionId(subscriptionId);
+        user.setPlanId(planId);
+        user.setStatus(status);
+
+        // Save the updated user to the database
+        userRepository.save(user);
+    }
 }
