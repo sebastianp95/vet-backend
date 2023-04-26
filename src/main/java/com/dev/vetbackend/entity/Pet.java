@@ -1,6 +1,7 @@
 package com.dev.vetbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,8 @@ public class Pet {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pet")
     @JsonIgnore
     private List<PetVaccine> petVaccines;
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MedicalHistory> medicalHistories;
     @JsonIgnore
     @ManyToOne(optional = false)
     private User user;

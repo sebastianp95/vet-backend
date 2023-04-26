@@ -2,6 +2,7 @@ package com.dev.vetbackend.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,9 +20,14 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "pet_name", nullable = false)
     private String petName;
+
     private String reason;
+
     private String phoneNumber;
+
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
     @JsonIgnore
     @ManyToOne(optional = false)
