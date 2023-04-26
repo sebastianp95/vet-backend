@@ -3,6 +3,7 @@ package com.dev.vetbackend.security;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,8 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
 //                .requestMatchers(new AntPathRequestMatcher("/api/register")).permitAll()
 //                .requestMatchers(new AntPathRequestMatcher("/stripe-webhook")).permitAll()
-                .requestMatchers("/api/register").permitAll()
-                .requestMatchers("/stripe-webhook").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/register").permitAll()
+                .requestMatchers(HttpMethod.POST,"/stripe-webhook").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
