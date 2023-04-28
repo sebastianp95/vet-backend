@@ -4,6 +4,8 @@ package com.dev.vetbackend.security;
 import com.dev.vetbackend.entity.User;
 import com.dev.vetbackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +20,18 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    @Value("${stripe.plan.basic}")
+    private String BASIC_PLAN_PRODUCT_ID;
+
+    @Autowired
+    public UserDetailServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) {
@@ -62,9 +71,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.setEmail(email);
         user.setName(name);
         user.setPassword(passwordEncoder.encode(password));
-
         // save the new user to the repository
-        userRepository.save(user);
+        updateUserSubscription(user, BASIC_PLAN_PRODUCT_ID, "basic", "active");
+
     }
 
     public void updateUserSubscription(User user, String subscriptionId, String planId, String status) {
@@ -72,7 +81,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.setSubscriptionId(subscriptionId);
         user.setPlanId(planId);
         user.setStatus(status);
-
         // Save the updated user to the database
         userRepository.save(user);
     }
