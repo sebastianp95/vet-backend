@@ -35,6 +35,8 @@ public class MedicalHistory {
     private List<String> previousSurgeriesOrIllness;
     private String veterinarianObservations;
     private String treatmentPlanAndRecommendations;
+    private int weight;
+    private int age;
     @JsonIgnore
     @ManyToOne(optional = false)
     private User user;

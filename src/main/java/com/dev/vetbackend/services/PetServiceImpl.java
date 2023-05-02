@@ -78,7 +78,6 @@ public class PetServiceImpl implements PetService {
                     pet.setAge(newPet.getAge());
                     pet.setBreed(newPet.getBreed());
                     pet.setOwnerId(newPet.getOwnerId());
-                    pet.setDoB(newPet.getDoB());
                     pet.setWeight(newPet.getWeight());
                     pet.setImageSrc(newPet.getImageSrc());
 

@@ -104,7 +104,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     public Pet createFirstPet(User user) {
         Pet newPet = new Pet();
-        newPet.setAge("2");
+        newPet.setAge(2);
         newPet.setBreed("Akita");
         newPet.setImageSrc("https://res.cloudinary.com/dgghss1d9/image/upload/v1680189604/vetpics/xln8gv3vjo3yczug8l56.jpg");
         newPet.setName("Otto");

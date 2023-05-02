@@ -28,6 +28,9 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     public MedicalHistory save(MedicalHistory medicalHistory, Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new RuntimeException("Pet not found for ID: " + petId));
+
+        updatePetIfNecessary(pet, medicalHistory);
+
         medicalHistory.setPet(pet);
 
         User user = userDetailServiceImpl.getAuthenticatedUser();
@@ -35,6 +38,23 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
         return medicalHistoryRepository.save(medicalHistory);
     }
+
+    private void updatePetIfNecessary(Pet pet, MedicalHistory medicalHistory) {
+        boolean shouldUpdatePet = false;
+
+        if (medicalHistory.getWeight() != pet.getWeight()) {
+            pet.setWeight(medicalHistory.getWeight());
+            shouldUpdatePet = true;
+        }
+        if (medicalHistory.getAge() != pet.getAge()) {
+            pet.setAge(medicalHistory.getAge());
+            shouldUpdatePet = true;
+        }
+        if (shouldUpdatePet) {
+            petRepository.save(pet);
+        }
+    }
+
     @Override
     public List<MedicalHistory> findPetMedicalRecords(Long id) {
         User user = userDetailServiceImpl.getAuthenticatedUser();

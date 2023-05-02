@@ -25,14 +25,14 @@ public class Pet {
     private String name;
     private Long ownerId;
     private String breed;
-    private String age;
-    private String doB;
+    private int age;
     private int weight;
     private String imageSrc;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pet")
     @JsonIgnore
     private List<PetVaccine> petVaccines;
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<MedicalHistory> medicalHistories;
     @JsonIgnore
     @ManyToOne(optional = false)
