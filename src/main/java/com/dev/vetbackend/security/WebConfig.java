@@ -14,7 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://vet-ui.vercel.app/",
                         "https://vet-ui-dev.vercel.app/",
-                        "http://localhost:3000/"
+                        "http://localhost:3000/",
+                        "https://checkout.stripe.com/"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
