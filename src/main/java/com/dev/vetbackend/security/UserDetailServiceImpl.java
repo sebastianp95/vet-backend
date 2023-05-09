@@ -102,6 +102,18 @@ public class UserDetailServiceImpl implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public void resetPassword(String email, String newPassword) throws Exception {
+        Optional<User> optionalUser = userRepository.findOneByEmail(email);
+        if (!optionalUser.isPresent()) {
+            throw new Exception("User with this email does not exist");
+        }
+
+        User user = optionalUser.get();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+
     public Pet createFirstPet(User user) {
         Pet newPet = new Pet();
         newPet.setAge(2);
