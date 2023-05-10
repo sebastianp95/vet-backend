@@ -31,8 +31,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private PetRepository petRepository;
     private MedicalHistoryRepository medicalHistoryRepository;
     private PasswordEncoder passwordEncoder;
-    @Value("${stripe.plan.basic}")
-    private String BASIC_PLAN_PRODUCT_ID;
 
     @Autowired
     public UserDetailServiceImpl(
@@ -86,7 +84,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.setName(name);
         user.setPassword(passwordEncoder.encode(password));
         // save the new user , first pet, and first medical history to the database
-        updateUserSubscription(user, BASIC_PLAN_PRODUCT_ID, "basic", "active");
+        updateUserSubscription(user, "no_sub", "basic", "active");
         Pet created = createFirstPet(user);
         createFirstMedicalHistory(created, user);
 

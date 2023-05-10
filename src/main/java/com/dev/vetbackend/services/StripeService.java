@@ -29,8 +29,6 @@ public class StripeService {
     private String API_SECRET_KEY;
     @Value("${stripe.webhook.secret}")
     private String STRIPE_WEBHOOK_SECRET;
-    @Value("${stripe.plan.basic}")
-    private String BASIC_PLAN_PRODUCT_ID;
     @Value("${stripe.plan.plus}")
     private String PLUS_PLAN_PRODUCT_ID;
     @Value("${stripe.plan.premium}")
@@ -143,9 +141,7 @@ public class StripeService {
             if (productId == null) {
                 return null;
             }
-            if (BASIC_PLAN_PRODUCT_ID.equals(productId)) {
-                return "basic";
-            } else if (PLUS_PLAN_PRODUCT_ID.equals(productId)) {
+            if (PLUS_PLAN_PRODUCT_ID.equals(productId)) {
                 return "plus";
             } else if (PREMIUM_PLAN_PRODUCT_ID.equals(productId)) {
                 return "premium";
