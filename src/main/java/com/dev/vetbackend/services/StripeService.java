@@ -27,8 +27,6 @@ public class StripeService {
 
     @Value("${stripe.secret}")
     private String API_SECRET_KEY;
-    @Value("${stripe.secret.test}")
-    private String API_SECRET_KEY_TEST;
     @Value("${stripe.webhook.secret}")
     private String STRIPE_WEBHOOK_SECRET;
     @Value("${stripe.plan.basic}")
@@ -73,7 +71,7 @@ public class StripeService {
     }
 
     public void processWebhook(String payload, String signatureHeader) {
-        Stripe.apiKey = API_SECRET_KEY_TEST;
+        Stripe.apiKey = API_SECRET_KEY;
 
         Event event;
 
