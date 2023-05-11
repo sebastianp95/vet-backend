@@ -9,8 +9,11 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.Event;
+import com.stripe.model.Invoice;
+import com.stripe.model.InvoiceLineItem;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.Plan;
+import com.stripe.model.Price;
 import com.stripe.model.Subscription;
 import com.stripe.model.SubscriptionItem;
 import com.stripe.net.Webhook;
@@ -92,13 +95,11 @@ public class StripeService {
                 // Handle a successful charge
                 break;
             case "customer.subscription.created":
-                handleNewSubscription(event);
                 break;
             case "checkout.session.completed":
-//            handle
                 break;
-            case "payment_intent.succeeded":
-//                handle
+            case "invoice.payment_succeeded":
+                handleNewSubscription(event);
                 break;
             default:
                 System.out.println("Unhandled event type: " + event.getType());
@@ -106,10 +107,10 @@ public class StripeService {
     }
 
     private void handleNewSubscription(Event event) {
-        Subscription subscription = (Subscription) event.getDataObjectDeserializer().getObject().orElse(null);
-        if (subscription != null) {
-            String subscriptionId = subscription.getId();
-            String customerId = subscription.getCustomer();
+        Invoice invoice = (Invoice) event.getDataObjectDeserializer().getObject().orElse(null);
+        if (invoice != null) {
+            String subscriptionId = invoice.getSubscription();
+            String customerId = invoice.getCustomer();
 
             // Fetch the customer object to get the user's email
             Customer customer = getCustomer(customerId);
@@ -117,9 +118,7 @@ public class StripeService {
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailServiceImpl.loadUserByUsername(email);
             User user = userDetails.getUser();
 
-            String plan = getPlanName(subscription);
-
-
+            String plan = getProductIdFromInvoice(invoice);
             userDetailServiceImpl.updateUserSubscription(user, subscriptionId, plan, "active");
         }
     }
@@ -131,12 +130,11 @@ public class StripeService {
             throw new RuntimeException(e);
         }
     }
-
-    private String getPlanName(Subscription subscription) {
-        List<SubscriptionItem> subscriptionItems = subscription.getItems().getData();
-        if (!subscriptionItems.isEmpty()) {
-            Plan subscriptionPlan = subscriptionItems.get(0).getPlan();
-            String productId = subscriptionPlan.getProduct();
+    private String getProductIdFromInvoice(Invoice invoice) {
+        List<InvoiceLineItem> invoiceLineItems = invoice.getLines().getData();
+        if (!invoiceLineItems.isEmpty()) {
+            Price price = invoiceLineItems.get(0).getPrice();
+            String productId = price.getProduct();
 
             if (productId == null) {
                 return null;
