@@ -139,10 +139,7 @@ public class StripeService {
             if (productId == null) {
                 return null;
             }
-
-            if ("prod_Ns1X1vygGNttzM".equals(productId)) {
-                return "TEST";
-            }
+            
             if (PLUS_PLAN_PRODUCT_ID.equals(productId)) {
                 return "plus";
             } else if (PREMIUM_PLAN_PRODUCT_ID.equals(productId)) {
