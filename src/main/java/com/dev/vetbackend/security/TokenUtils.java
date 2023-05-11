@@ -22,7 +22,7 @@ public class TokenUtils {
     public TokenUtils(@Value("${jwt.secret}") String prop) {
         this.ACCESS_TOKEN_SECRET = prop;
     }
-    private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L;
+    private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 86_400L;
 
     public static String createToken(String name, String email) {
         long expirationTime = ACCESS_TOKEN_VALIDITY_SECONDS * 1_000;
