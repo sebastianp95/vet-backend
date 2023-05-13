@@ -13,6 +13,7 @@ import com.dev.vetbackend.repository.PetVermifugeRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,15 +39,15 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> findAllByUser() {
+    public List<Pet> findAllByUser(Pageable pageable) {
         User user = userDetailServiceImpl.getAuthenticatedUser();
-        List<Pet> pets = repository.findAllByUser(user);
+        List<Pet> pets = repository.findAllByUser(user, pageable).getContent();
 
         return pets;
     }
 
     @Override
-    public Pet save(Pet newPet) throws CustomException{
+    public Pet save(Pet newPet) throws CustomException {
         User user = userDetailServiceImpl.getAuthenticatedUser();
         SubscriptionPlan plan = SubscriptionPlan.fromPlanId(user.getPlanId());
 
