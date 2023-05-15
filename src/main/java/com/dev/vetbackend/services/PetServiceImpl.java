@@ -11,11 +11,17 @@ import com.dev.vetbackend.repository.PetRepository;
 import com.dev.vetbackend.repository.PetVaccineRepository;
 import com.dev.vetbackend.repository.PetVermifugeRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,6 +37,8 @@ public class PetServiceImpl implements PetService {
     private final PetVermifugeRepository petVermifugeRepository;
     @Autowired
     private final UserDetailServiceImpl userDetailServiceImpl;
+    @Autowired
+    private EntityManager entityManager;
 
 
     @Override
@@ -43,7 +51,39 @@ public class PetServiceImpl implements PetService {
         User user = userDetailServiceImpl.getAuthenticatedUser();
         List<Pet> pets = repository.findAllByUser(user, pageable).getContent();
 
+
         return pets;
+    }
+
+    @Override
+    public List<Pet> findAllByUser(Pageable pageable, Long id, String name, Long ownerPhone) {
+        User user = userDetailServiceImpl.getAuthenticatedUser();
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pet> cq = cb.createQuery(Pet.class);
+
+        Root<Pet> pet = cq.from(Pet.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(cb.equal(pet.get("user"), user));
+
+        if (id != null) {
+            predicates.add(cb.equal(pet.get("id"), id));
+        }
+
+        if (name != null) {
+            predicates.add(cb.like(pet.get("name"), "%" + name + "%"));
+        }
+
+        if (ownerPhone != null) {
+            predicates.add(cb.like(pet.get("ownerId").as(String.class), "%" + ownerPhone + "%"));
+        }
+
+
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize()).getResultList();
     }
 
     @Override

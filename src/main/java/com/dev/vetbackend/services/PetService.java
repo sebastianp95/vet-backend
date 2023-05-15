@@ -12,6 +12,8 @@ public interface PetService {
 
     List<Pet> findAllByUser(Pageable pageable);
 
+    List<Pet> findAllByUser(Pageable pageable, Long id, String name, Long ownerPhone);
+
     Pet save(Pet newPet);
 
     Pet findById(Long id);

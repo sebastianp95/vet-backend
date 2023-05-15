@@ -36,11 +36,14 @@ public class PetController {
     @GetMapping("")
     public ResponseEntity<?> all(
             @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "20") Integer resultsPerPage,
-            @RequestParam(required = false, defaultValue = "id") String sortBy
+            @RequestParam(required = false, defaultValue = "30") Integer resultsPerPage,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Long ownerId
     ) {
         Pageable pageable = PageRequest.of(page, resultsPerPage, Sort.by(sortBy));
-        List<Pet> pets = petService.findAllByUser(pageable);
+        List<Pet> pets = petService.findAllByUser(pageable, id, name, ownerId);
         return ResponseEntity.ok(pets);
     }
 
