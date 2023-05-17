@@ -16,7 +16,7 @@ public class Vaccine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String manufacture;
+    private String manufacturer;
     @JsonIgnore
     @ManyToOne(optional = false)
     private User user;
