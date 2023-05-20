@@ -36,14 +36,8 @@ public class CalendarController {
 
     @PostMapping("")
     public ResponseEntity<?> createAppointment(@RequestBody Appointment newAppointment) {
-//        try {
             Appointment appointment = calendarService.save(newAppointment);
             return ResponseEntity.ok(appointment);
-//        } catch (CustomException e) {
-//            // Return the error response as a ResponseEntity
-//            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-//            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-//        }
     }
 
     @GetMapping("/{id}")

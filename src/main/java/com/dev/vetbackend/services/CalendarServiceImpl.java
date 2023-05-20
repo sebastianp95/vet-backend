@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -21,6 +23,8 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository repository;
     @Autowired
     private final UserDetailServiceImpl userDetailServiceImpl;
+    @Autowired
+    private final TwilioService twilioService;
 
 
     @Override
@@ -37,22 +41,51 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-//    public Appointment save(Appointment newAppointment) throws CustomException{
     public Appointment save(Appointment newAppointment) {
+        if (newAppointment == null) {
+            throw new IllegalArgumentException("Appointment cannot be null");
+        }
+
         User user = userDetailServiceImpl.getAuthenticatedUser();
-//        SubscriptionPlan plan = SubscriptionPlan.fromPlanId(user.getPlanId());
-//
-//        int currentAppointmentCount = 0;
-//        if (plan != SubscriptionPlan.PREMIUM) {
-//            currentAppointmentCount = repository.countByUser(user);
-//        }
-//        if (currentAppointmentCount >= plan.getMaxAppointmentsAllowed()) {
-//            throw new CustomException("You have reached the maximum number of appointments allowed for your subscription plan.");
-//        }
+        if (user == null) {
+            throw new IllegalStateException("User must be authenticated");
+        }
 
         newAppointment.setUser(user);
         Appointment appointment = repository.save(newAppointment);
+
+        if (appointment == null) {
+            throw new CustomException("Error saving appointment");
+        }
+
+        if (appointment.getPhoneNumber() != null && !appointment.getPhoneNumber().isEmpty()) {
+            String message = buildMessage(appointment);
+            twilioService.sendMessage(appointment.getPhoneNumber(), message);
+        }
+
         return appointment;
+    }
+
+    private String buildMessage(Appointment appointment) {
+        StringBuilder message = new StringBuilder();
+        message.append("Hello there! Just a quick note to confirm your appointment. ")
+                .append("It's all set for ")
+                .append(formatDateTime(appointment.getDate()))
+                .append(". ")
+                .append("We're excited to meet ")
+                .append(appointment.getPetName())
+                .append("! ");
+
+        if (appointment.getMessage() != null && !appointment.getMessage().isEmpty()) {
+            message.append("\n\nP.S. ").append(appointment.getMessage());
+        }
+
+        return message.toString();
+    }
+
+    private String formatDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' HH:mm");
+        return dateTime.format(formatter);
     }
 
 
