@@ -32,6 +32,8 @@ public class StripeService {
     private String API_SECRET_KEY;
     @Value("${stripe.webhook.secret}")
     private String STRIPE_WEBHOOK_SECRET;
+    @Value("${stripe.plan.basic}")
+    private String BASIC_PLAN_PRODUCT_ID;
     @Value("${stripe.plan.plus}")
     private String PLUS_PLAN_PRODUCT_ID;
     @Value("${stripe.plan.premium}")
@@ -130,6 +132,7 @@ public class StripeService {
             throw new RuntimeException(e);
         }
     }
+
     private String getProductIdFromInvoice(Invoice invoice) {
         List<InvoiceLineItem> invoiceLineItems = invoice.getLines().getData();
         if (!invoiceLineItems.isEmpty()) {
@@ -139,8 +142,10 @@ public class StripeService {
             if (productId == null) {
                 return null;
             }
-            
-            if (PLUS_PLAN_PRODUCT_ID.equals(productId)) {
+
+            if (BASIC_PLAN_PRODUCT_ID.equals(productId)) {
+                return "basic";
+            } else if (PLUS_PLAN_PRODUCT_ID.equals(productId)) {
                 return "plus";
             } else if (PREMIUM_PLAN_PRODUCT_ID.equals(productId)) {
                 return "premium";

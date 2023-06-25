@@ -84,7 +84,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.setName(name);
         user.setPassword(passwordEncoder.encode(password));
         // save the new user , first pet, and first medical history to the database
-        updateUserSubscription(user, "no_sub", "basic", "inactive");
+        updateUserSubscription(user, "no_sub", "no_plan", "inactive");
         Pet created = createFirstPet(user);
         createFirstMedicalHistory(created, user);
 

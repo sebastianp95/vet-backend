@@ -1,8 +1,9 @@
 package com.dev.vetbackend.constants;
 
 public enum SubscriptionPlan {
-    BASIC("basic", 10),
-    PLUS("plus", 1000),
+    NO_PLAN("no_plan", 10),
+    BASIC("basic", 1000),
+    PLUS("plus", Integer.MAX_VALUE),
     PREMIUM("premium", Integer.MAX_VALUE);
 
     private final String planId;

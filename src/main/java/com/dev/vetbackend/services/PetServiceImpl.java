@@ -83,7 +83,7 @@ public class PetServiceImpl implements PetService {
         SubscriptionPlan plan = SubscriptionPlan.fromPlanId(user.getPlanId());
 
         int currentPetCount = 0;
-        if (plan != SubscriptionPlan.PREMIUM) {
+        if (plan != SubscriptionPlan.PREMIUM && plan != SubscriptionPlan.PLUS) {
             currentPetCount = repository.countByUser(user);
         }
         if (currentPetCount >= plan.getMaxPetsAllowed()) {
