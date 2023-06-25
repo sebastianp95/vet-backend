@@ -30,7 +30,7 @@ public class Pet {
     private String imageSrc;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pet")
     @JsonIgnore
-    private List<PetVaccine> petVaccines;
+    private List<PetVaccination> petVaccinations;
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<MedicalHistory> medicalHistories;

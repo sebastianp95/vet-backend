@@ -2,8 +2,6 @@ package com.dev.vetbackend.controller;
 
 import com.dev.vetbackend.entity.ErrorResponse;
 import com.dev.vetbackend.entity.Pet;
-import com.dev.vetbackend.entity.PetVaccine;
-import com.dev.vetbackend.entity.PetVermifuge;
 import com.dev.vetbackend.exception.CustomException;
 import com.dev.vetbackend.services.PetService;
 import lombok.AllArgsConstructor;
@@ -73,40 +71,5 @@ public class PetController {
     void deletePet(@PathVariable Long id) {
         petService.deleteById(id);
     }
-
-    //    VACCINATION CONTROLLERS
-    @GetMapping("/vaccineCard/{id}")
-    public ResponseEntity<?> vaccines(@PathVariable Long id) {
-        List<PetVaccine> vaccinationCard = petService.findVaccinesByPetId(id);
-        return ResponseEntity.ok(vaccinationCard);
-    }
-
-    @PostMapping("/vaccineCard")
-    public void createVaccinesCardRecord(@RequestBody PetVaccine newRecord) {
-        PetVaccine record = petService.saveVaccinationRecord(newRecord);
-    }
-
-    @DeleteMapping("/vaccineCard/{petId}/{vaccineId}")
-    void deleteVaccinationRecord(@PathVariable Long petId, @PathVariable Long vaccineId) {
-        petService.deleteVaccinationRecordById(petId, vaccineId);
-    }
-
-    //    VERMIFUGE CONTROLLERS
-    @GetMapping("/vermifugeCard/{id}")
-    public ResponseEntity<?> vermifuge(@PathVariable Long id) {
-        List<PetVermifuge> vermifugeCard = petService.findVermifugesByPetId(id);
-        return ResponseEntity.ok(vermifugeCard);
-    }
-
-    @PostMapping("/vermifugeCard")
-    public void createVermifugesCardRecord(@RequestBody PetVermifuge newRecord) {
-        PetVermifuge record = petService.saveVermifugeRecord(newRecord);
-    }
-
-    @DeleteMapping("/vermifugeCard/{petId}/{vermifugeId}")
-    void deleteVermifugeRecord(@PathVariable Long petId, @PathVariable Long vermifugeId) {
-        petService.deleteVermifugeRecordById(petId, vermifugeId);
-    }
-
 
 }

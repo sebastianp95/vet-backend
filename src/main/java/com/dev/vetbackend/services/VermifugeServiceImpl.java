@@ -1,7 +1,6 @@
 package com.dev.vetbackend.services;
 
 import com.dev.vetbackend.entity.User;
-import com.dev.vetbackend.entity.Vaccine;
 import com.dev.vetbackend.entity.Vermifuge;
 import com.dev.vetbackend.repository.VermifugeRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
