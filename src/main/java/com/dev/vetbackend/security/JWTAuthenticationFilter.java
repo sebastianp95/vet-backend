@@ -50,8 +50,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //        headers.add("Access-Control-Allow-Origin", "http://localhost:3000/");
 //        headers.add("Access-Control-Allow-Headers", "Authorization");
 //        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Authorization", "Bearer " + token);
-//        response.addHeader("Authorization", token);
+        response.setHeader("Authorization", token);
         response.getWriter().flush();
 
         super.successfulAuthentication(request, response, chain, authResult);
