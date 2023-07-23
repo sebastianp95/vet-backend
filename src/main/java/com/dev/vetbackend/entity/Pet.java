@@ -23,6 +23,7 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String ownerName;
     private Long ownerId;
     private String breed;
     private int age;
