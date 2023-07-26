@@ -1,11 +1,13 @@
 package com.dev.vetbackend.security;
 
 
-import com.dev.vetbackend.entity.MedicalHistory;
-import com.dev.vetbackend.entity.Pet;
-import com.dev.vetbackend.entity.User;
+import com.dev.vetbackend.constants.ProductType;
+import com.dev.vetbackend.dto.UserDTO;
+import com.dev.vetbackend.entity.*;
+import com.dev.vetbackend.exception.CustomException;
 import com.dev.vetbackend.repository.MedicalHistoryRepository;
 import com.dev.vetbackend.repository.PetRepository;
+import com.dev.vetbackend.repository.ProductRepository;
 import com.dev.vetbackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
     private PetRepository petRepository;
     private MedicalHistoryRepository medicalHistoryRepository;
+    private ProductRepository productRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -37,10 +40,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
             UserRepository userRepository,
             PetRepository petRepository,
             MedicalHistoryRepository medicalHistoryRepository,
+            ProductRepository productRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.petRepository = petRepository;
         this.medicalHistoryRepository = medicalHistoryRepository;
+        this.productRepository = productRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -53,6 +58,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         return new UserDetailsImpl(user);
 
+    }
+
+    public UserDTO getAuthenticatedUserDTO() {
+        User user = getAuthenticatedUser();
+        return mapToDTO(user);
     }
 
     public User getAuthenticatedUser() {
@@ -87,6 +97,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         updateUserSubscription(user, "no_sub", "no_plan", "inactive");
         Pet created = createFirstPet(user);
         createFirstMedicalHistory(created, user);
+        createFirstVaccines(created, user);
 
 
     }
@@ -111,8 +122,37 @@ public class UserDetailServiceImpl implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public User updateUser(Long id, User newUserInfo) {
+        return userRepository.findById(Math.toIntExact(id))
+                .map(existingUser -> {
+                    existingUser.setName(newUserInfo.getName());
+                    existingUser.setImageSrc(newUserInfo.getImageSrc());
+                    existingUser.setPrintImage(newUserInfo.isPrintImage());
+                    existingUser.setSecondEmail(newUserInfo.getSecondEmail());
+                    existingUser.setPhone(newUserInfo.getPhone());
 
-    public Pet createFirstPet(User user) {
+                    User updatedUser = userRepository.save(existingUser);
+                    if (updatedUser == null) {
+                        throw new CustomException("Error updating user with id " + id);
+                    }
+                    return updatedUser;
+                })
+                .orElseThrow(() -> new CustomException("User with id " + id + " not found"));
+    }
+
+    private UserDTO mapToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setImageSrc(user.getImageSrc());
+        dto.setPrintImage(user.isPrintImage());
+        dto.setSecondEmail(user.getSecondEmail());
+        dto.setPhone(user.getPhone());
+        return dto;
+    }
+
+    private Pet createFirstPet(User user) {
         Pet newPet = new Pet();
         newPet.setAge(2);
         newPet.setBreed("Akita");
@@ -125,8 +165,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return petRepository.save(newPet);
     }
 
-
-    public void createFirstMedicalHistory(Pet pet, User user) {
+    private void createFirstMedicalHistory(Pet pet, User user) {
         MedicalHistory medicalHistory = new MedicalHistory();
         medicalHistory.setDateOfVisit("2023-04-30");
         medicalHistory.setReasonForVisit("Routine checkup");
@@ -139,6 +178,50 @@ public class UserDetailServiceImpl implements UserDetailsService {
         medicalHistory.setPet(pet);
 
         medicalHistoryRepository.save(medicalHistory);
+    }
+
+    private void createFirstVaccines(Pet pet, User user) {
+        // First Vaccine
+        Vaccination product1 = new Vaccination();
+        product1.setName("Rabies");
+        product1.setPrice(10000l);
+        product1.setProductType(ProductType.VACCINATION);
+        product1.setCost(5000l);
+        product1.setUser(user);
+        product1.setImageSrc("https://res.cloudinary.com/dgghss1d9/image/upload/v1690403475/vetpics/fw6e7ialbf8hqpir2ggp.jpg");
+        product1.setManufacturer("Pfizer");
+        product1.setQuantity(6);
+        product1.setTargetSpecies("Dog");
+        product1.setType("vaccine"); // setting type
+        productRepository.save(product1);
+
+        // Second Vaccine
+        Vaccination product2 = new Vaccination();
+        product2.setName("Distemper");
+        product2.setPrice(12000l);
+        product2.setProductType(ProductType.VACCINATION);
+        product2.setCost(6000l);
+        product2.setUser(user);
+        product2.setImageSrc("https://res.cloudinary.com/dgghss1d9/image/upload/v1690403475/vetpics/fw6e7ialbf8hqpir2ggp.jpg");
+        product2.setManufacturer("Pfizer");
+        product2.setQuantity(6);
+        product2.setTargetSpecies("Dog");
+        product2.setType("vaccine"); // setting type
+        productRepository.save(product2);
+
+        // Vermifuge
+        Vaccination product3 = new Vaccination();
+        product3.setName("Drontal Plus");
+        product3.setPrice(5000l);
+        product3.setProductType(ProductType.VACCINATION); // Assuming vermifuge is a type of medication
+        product3.setCost(2500l);
+        product3.setUser(user);
+        product3.setImageSrc("https://res.cloudinary.com/dgghss1d9/image/upload/v1690403475/vetpics/fw6e7ialbf8hqpir2ggp.jpg");
+        product3.setManufacturer("Bayer");
+        product3.setQuantity(10);
+        product3.setTargetSpecies("Dog");
+        product3.setType("vermifuge"); // setting type
+        productRepository.save(product3);
     }
 
 }

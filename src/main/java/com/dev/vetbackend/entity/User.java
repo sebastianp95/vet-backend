@@ -25,6 +25,10 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String ImageSrc;
+    private boolean printImage = false;
+    private String secondEmail;
+    private Long phone;
     private String status;
     private String subscriptionId;
     private String planId;
