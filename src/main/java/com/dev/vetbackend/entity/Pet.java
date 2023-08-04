@@ -9,11 +9,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 
 import java.util.List;
+
+import com.dev.vetbackend.constants.ReproductiveStatus;
+import com.dev.vetbackend.constants.Species;
 
 @Entity
 @Data
@@ -23,12 +28,19 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Enumerated(EnumType.STRING)
+    private Species species;
+    @Pattern(regexp = "(M|F)")
+    private String gender;
     private String ownerName;
+    private String ownerEmail;
     private Long ownerId;
     private String breed;
     private int age;
     private int weight;
     private String imageSrc;
+    @Enumerated(EnumType.STRING)
+    private ReproductiveStatus reproductiveStatus;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pet")
     @JsonIgnore
     private List<PetVaccination> petVaccinations;
