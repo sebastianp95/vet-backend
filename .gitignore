@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Config files ###
+.application-test.properties
+src/test/resources/application-test.properties
