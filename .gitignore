@@ -23,4 +23,4 @@ target/
 .vscode/
 
 ### Config files ###
-src/test/java/resources/application-test.properties
+src/test/resources/application-test.properties
