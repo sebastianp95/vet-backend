@@ -103,6 +103,8 @@ public class CalendarServiceImpl implements CalendarService {
                     appointment.setReason(newAppointment.getReason());
                     appointment.setPhoneNumber(newAppointment.getPhoneNumber());
                     appointment.setDate(newAppointment.getDate());
+                    appointment.setEmail(newAppointment.getEmail());
+                    appointment.setPetOwnerName(newAppointment.getPetOwnerName());
 
                     Appointment updatedAppointment = repository.save(appointment);
                     if (updatedAppointment == null) {
