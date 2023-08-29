@@ -47,6 +47,9 @@ public class Pet {
     @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<MedicalHistory> medicalHistories;
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Exam> exams;
     @JsonIgnore
     @ManyToOne(optional = false)
     private User user;
