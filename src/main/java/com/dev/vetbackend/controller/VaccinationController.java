@@ -1,6 +1,6 @@
 package com.dev.vetbackend.controller;
 
-import com.dev.vetbackend.entity.PetVaccination;
+import com.dev.vetbackend.dto.PetVaccinationDTO;
 import com.dev.vetbackend.entity.Vaccination;
 import com.dev.vetbackend.services.VaccinationService;
 import lombok.AllArgsConstructor;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,19 +51,19 @@ public class VaccinationController {
     //VACCINATION CARD CONTROLLERS
     @GetMapping("/vaccinationCard/{petId}")
     public ResponseEntity<?> vaccinations(@PathVariable Long petId) {
-        List<PetVaccination> vaccinationCard = vaccinationService.findVaccinationsByPetId(petId);
+        List<PetVaccinationDTO> vaccinationCard = vaccinationService.findVaccinationsByPetId(petId);
         return ResponseEntity.ok(vaccinationCard);
     }
 
     @PostMapping("/vaccinationCard")
-    public void createVaccinationCardRecord(@RequestBody PetVaccination newRecord) {
-        PetVaccination record = vaccinationService.saveVaccinationRecord(newRecord);
+    public ResponseEntity<?> createVaccinationCardRecord(@RequestBody PetVaccinationDTO newRecordDTO) {
+        PetVaccinationDTO savedRecord = vaccinationService.saveVaccinationRecord(newRecordDTO);
+        return new ResponseEntity<>(savedRecord, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/vaccinationCard/{petId}/{vaccinationId}")
-    void deleteVaccinationRecord(@PathVariable Long petId, @PathVariable Long vaccinationId) {
-        vaccinationService.deleteVaccinationRecordById(petId, vaccinationId);
+    @DeleteMapping("/vaccinationCard/{id}")
+    public void deleteVaccinationRecord(@PathVariable Long id) {
+        vaccinationService.deleteVaccinationRecordById(id);
     }
-
 
 }

@@ -1,10 +1,13 @@
 package com.dev.vetbackend.services;
 
+import com.dev.vetbackend.dto.PetVaccinationDTO;
 import com.dev.vetbackend.entity.*;
+import com.dev.vetbackend.repository.PetRepository;
 import com.dev.vetbackend.repository.PetVaccinationRepository;
 import com.dev.vetbackend.repository.VaccinationRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -27,6 +30,8 @@ public class VaccinationServiceImpl implements VaccinationService {
     private final VaccinationRepository repository;
     @Autowired
     private final PetVaccinationRepository petVaccinationRepository;
+    @Autowired
+    private final PetRepository petRepository;
     @Autowired
     private final UserDetailServiceImpl userDetailServiceImpl;
     @Autowired
@@ -87,27 +92,67 @@ public class VaccinationServiceImpl implements VaccinationService {
         repository.deleteById(id);
     }
 
-//    VACCINATION CARD
+    //    VACCINATION CARD
     @Override
-    public List<PetVaccination> findVaccinationsByPetId(Long id) {
+    public List<PetVaccinationDTO> findVaccinationsByPetId(Long id) {
         List<PetVaccination> list = petVaccinationRepository.findByPetId(id);
-        return list;
+        return list.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public PetVaccination saveVaccinationRecord(PetVaccination newRecord) {
-        // Validate if vaccinationId exists
-        Optional<Vaccination> existingVaccination = repository.findById(Long.valueOf(newRecord.getVaccinationId()));
-        if (existingVaccination.isEmpty()) { // Use isEmpty() to check if Optional is empty
-            throw new IllegalArgumentException("Vaccination ID not found");
+    public PetVaccinationDTO saveVaccinationRecord(PetVaccinationDTO newRecordDTO) {
+
+        PetVaccination newRecord = convertToEntity(newRecordDTO);
+        PetVaccination savedPetVaccination = petVaccinationRepository.save(newRecord);
+        return convertToDTO(savedPetVaccination);
+    }
+    
+    @Override
+    public void deleteVaccinationRecordById(Long id) {
+        Optional<PetVaccination> existingRecord = petVaccinationRepository.findById(id);
+
+        if (existingRecord.isEmpty()) {
+            throw new IllegalArgumentException("Record not found");
         }
-        PetVaccination petVaccination = petVaccinationRepository.save(newRecord);
+
+        petVaccinationRepository.delete(existingRecord.get());
+    }
+
+    private PetVaccinationDTO convertToDTO(PetVaccination petVaccination) {
+        // Assuming you have a constructor or setter methods to set all the properties for PetVaccinationDTO
+        PetVaccinationDTO dto = new PetVaccinationDTO();
+        dto.setId(petVaccination.getId());
+        dto.setPetId(petVaccination.getPet().getId());
+        dto.setVaccinationId(petVaccination.getVaccination().getId());
+        dto.setVaccinationName(petVaccination.getVaccinationName());
+        dto.setVaccinationType(petVaccination.getVaccinationType());
+        dto.setDate(petVaccination.getDate());
+        // Add more fields here if you have them
+        return dto;
+    }
+
+    private PetVaccination convertToEntity(PetVaccinationDTO petVaccinationDTO) {
+        PetVaccination petVaccination = new PetVaccination();
+
+        petVaccination.setId(petVaccinationDTO.getId());
+
+        // Fetch the Pet entity by ID
+        Pet pet = petRepository.findById(petVaccinationDTO.getPetId())
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found"));
+        petVaccination.setPet(pet);
+
+        // Fetch the Vaccination entity by ID
+        Vaccination vaccination = repository.findById(petVaccinationDTO.getVaccinationId())
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found"));
+        petVaccination.setVaccination(vaccination);
+
+        petVaccination.setVaccinationName(petVaccinationDTO.getVaccinationName());
+        petVaccination.setVaccinationType(petVaccinationDTO.getVaccinationType());
+        petVaccination.setDate(petVaccinationDTO.getDate());
+
         return petVaccination;
     }
 
-
-    @Override
-    public void deleteVaccinationRecordById(Long petId, Long vaccinationId) {
-        petVaccinationRepository.deletePetVaccinationByPetIdAndVaccinationId(petId, String.valueOf(vaccinationId));
-    }
 }
