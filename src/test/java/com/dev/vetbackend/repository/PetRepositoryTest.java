@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @DataJpaTest
-@ActiveProfiles("test")
 public class PetRepositoryTest {
 
     @Autowired
