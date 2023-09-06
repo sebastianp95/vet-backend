@@ -30,8 +30,6 @@ public class Appointment {
     private String petOwnerName;
     private String phoneNumber;
     private String email;
-    @Transient
-    private String message;
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
     @JsonIgnore
