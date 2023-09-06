@@ -1,5 +1,6 @@
 package com.dev.vetbackend.controller;
 
+import com.dev.vetbackend.dto.AppointmentDTO;
 import com.dev.vetbackend.entity.ErrorResponse;
 import com.dev.vetbackend.entity.Appointment;
 import com.dev.vetbackend.exception.CustomException;
@@ -35,8 +36,8 @@ public class CalendarController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createAppointment(@RequestBody Appointment newAppointment) {
-            Appointment appointment = calendarService.save(newAppointment);
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentDTO newAppointmentDTO) {
+            Appointment appointment = calendarService.save(newAppointmentDTO);
             return ResponseEntity.ok(appointment);
     }
 
@@ -46,8 +47,8 @@ public class CalendarController {
     }
 
     @PutMapping("/{id}")
-    Appointment editAppointment(@RequestBody Appointment newAppointment, @PathVariable Long id) {
-        return calendarService.update(id, newAppointment);
+    Appointment editAppointment(@RequestBody AppointmentDTO newAppointmentDTO, @PathVariable Long id) {
+        return calendarService.update(id, newAppointmentDTO);
     }
 
     @DeleteMapping("/{id}")
