@@ -140,6 +140,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new CustomException("User with id " + id + " not found"));
     }
 
+    public void deleteUser(Long id) {
+        userRepository.deleteById(Math.toIntExact(id));
+    }
     private UserDTO mapToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
