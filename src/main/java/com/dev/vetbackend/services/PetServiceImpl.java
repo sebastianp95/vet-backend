@@ -14,6 +14,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -128,7 +129,12 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public void deleteById(Long id) {
-        repository.deleteById(Math.toIntExact(id));
+        try {
+            repository.deleteById(Math.toIntExact(id));
+        } catch (EmptyResultDataAccessException e) {
+            throw new PetNotFoundException("Pet not found");
+        }
     }
+
 
 }

@@ -26,9 +26,10 @@ public class Appointment {
     private String petName;
     @Enumerated(EnumType.STRING)
     private Reason reason;
+    @Column(name = "pet_owner_name")
+    private String petOwnerName;
     private String phoneNumber;
-    @Transient
-    private String message;
+    private String email;
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
     @JsonIgnore

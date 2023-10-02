@@ -3,8 +3,8 @@ package com.dev.vetbackend.entity;
 import com.dev.vetbackend.utils.StringListToJsonConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +24,7 @@ public class MedicalHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String dateOfVisit;
+    @Column(length = 800)
     private String reasonForVisit;
     @Convert(converter = StringListToJsonConverter.class)
     private List<String> currentMedications;
@@ -33,7 +34,9 @@ public class MedicalHistory {
 
     @Convert(converter = StringListToJsonConverter.class)
     private List<String> previousSurgeriesOrIllness;
+    @Column(length = 800)
     private String veterinarianObservations;
+    @Column(length = 800)
     private String treatmentPlanAndRecommendations;
     private int weight;
     private int age;

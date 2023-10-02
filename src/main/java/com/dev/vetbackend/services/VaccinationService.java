@@ -1,5 +1,6 @@
 package com.dev.vetbackend.services;
 
+import com.dev.vetbackend.dto.PetVaccinationDTO;
 import com.dev.vetbackend.entity.PetVaccination;
 import com.dev.vetbackend.entity.Vaccination;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +18,10 @@ public interface VaccinationService {
     void deleteById(Long id);
 
     //    VACCINATION CARD
-    PetVaccination saveVaccinationRecord(PetVaccination newRecord);
+    PetVaccinationDTO saveVaccinationRecord(PetVaccinationDTO newRecord);
 
-    List<PetVaccination> findVaccinationsByPetId(Long id);
+    List<PetVaccinationDTO> findVaccinationsByPetId(Long id);
 
-    void deleteVaccinationRecordById(Long petId, Long vaccinationId);
+    void deleteVaccinationRecordById(Long id);
 
 }

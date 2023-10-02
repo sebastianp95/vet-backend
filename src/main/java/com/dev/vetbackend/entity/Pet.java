@@ -41,12 +41,15 @@ public class Pet {
     private String imageSrc;
     @Enumerated(EnumType.STRING)
     private ReproductiveStatus reproductiveStatus;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pet")
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<PetVaccination> petVaccinations;
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<MedicalHistory> medicalHistories;
+    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Exam> exams;
     @JsonIgnore
     @ManyToOne(optional = false)
     private User user;

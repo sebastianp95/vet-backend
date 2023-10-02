@@ -19,9 +19,9 @@ public class UserController {
     private final EmailSenderService emailSenderService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User registrationRequest) {
+    public ResponseEntity<?> register(@RequestParam(value = "lng", defaultValue = "en") String language, @RequestBody User registrationRequest) {
         try {
-            userDetailService.registerNewUser(registrationRequest.getEmail(), registrationRequest.getPassword(), registrationRequest.getName());
+            userDetailService.registerNewUser(registrationRequest.getEmail(), registrationRequest.getPassword(), registrationRequest.getName(), language);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
