@@ -24,3 +24,6 @@ target/
 
 ### Config files ###
 src/test/resources/application-test.properties
+
+### Test Env ###
+src/test/resources/application-test.properties
