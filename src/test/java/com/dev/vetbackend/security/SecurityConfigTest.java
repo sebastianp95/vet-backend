@@ -1,46 +1,69 @@
 package com.dev.vetbackend.security;
 
+import com.dev.vetbackend.entity.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.stream.IntStream;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.http.MediaType;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class SecurityConfigTest {
 
-    @Test
-    public void encoder() {
-        String pass = "tati";
-        System.out.println(passwordEncoder().encode(pass));
-    }
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private UserDetailServiceImpl userDetailService;
 
     @Test
-    void test() {
-        System.out.println(solution(10, 21));
-        System.out.println(solution(13, 11));
-        System.out.println(solution(2, 1));
-        System.out.println(solution(1, 8));
+    void rootWhenUnauthenticatedThen403() throws Exception {
+        mockMvc.perform(get("/api/user"))
+                .andExpect(status().isForbidden());
+    }
+    @Test
+    public void accessProtectedEndpointWithInvalidJwtToken() throws Exception {
+        mockMvc.perform(get("/api/user")
+                        .header("Authorization", "Bearer invalid_token"))
+                .andExpect(status().isForbidden());
+    }
+    @Test
+    @WithMockUser
+    public void rootWithMockUserStatusIsOK() throws Exception {
+        mockMvc.perform(get("/api/user")).andExpect(status().isOk());
     }
 
-    public int solution(int A, int B) {
-        int maxLength = Math.max(A, B); // the maximum length of a stick
-        int minLength = 1; // the minimum length of a stick
+    @Test
+    public void accessPublicEndpoints() throws Exception {
 
-        return IntStream.rangeClosed(minLength, maxLength)
-                .filter(side -> canMakeSquare(A, B, side))
-                .max() // get the largest side length
-                .orElse(0); // return 0 if no square is possible
+        User registrationRequest = new User();
+        registrationRequest.setEmail("test@example.com");
+        registrationRequest.setPassword("password");
+        registrationRequest.setName("Test User");
+
+        mockMvc.perform(post("/api/register")
+                        .param("lng", "en")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(registrationRequest)))
+                .andExpect(status().isOk());
+
+
+        verify(userDetailService, times(1))
+                .registerNewUser(anyString(), anyString(), anyString(), anyString());
+
     }
 
-    // check if it's possible to make a square of a given side length
-    private boolean canMakeSquare(int A, int B, int side) {
-        int sticksForSide = 4;
-        int sticksForShorter = (A / side) + (B / side);
 
-        return sticksForShorter >= sticksForSide; // return true if we have enough sticks
-    }
 
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
+

@@ -1,9 +1,10 @@
-package com.dev.vetbackend.security;
+package com.dev.vetbackend.dto;
 
 import lombok.Data;
 
 @Data
-public class AuthCredentials {
+public class AuthCredentialsDTO {
     private String email;
     private String password;
 }
+
