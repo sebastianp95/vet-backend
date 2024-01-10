@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class AppointmentDTO {
     private String petName;
     private String reason;
+    private String countryCode;
     private String phoneNumber;
     private boolean sendSMS;
     private String email;
@@ -16,4 +17,5 @@ public class AppointmentDTO {
     private String petOwnerName;
     private LocalDateTime date;
     private String language;
+
 }

@@ -28,6 +28,7 @@ public class Appointment {
     private Reason reason;
     @Column(name = "pet_owner_name")
     private String petOwnerName;
+    private String countryCode;
     private String phoneNumber;
     private String email;
     @Column(name = "date", nullable = false)

@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class TwilioService {
 
-    @Value("${twilio.auth.token}")
+    @Value("${twilio.auth.token.co}")
     private String AUTH_TOKEN;
 
-    @Value("${twilio.account.sid}")
+    @Value("${twilio.account.sid.co}")
     private String ACCOUNT_SID;
 
-    @Value("${twilio.phone.number}")
+    @Value("${twilio.phone.number.co}")
     private String FROM_NUMBER;
     @PostConstruct
     public void init() {
