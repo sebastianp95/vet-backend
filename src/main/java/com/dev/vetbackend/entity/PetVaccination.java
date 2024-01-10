@@ -15,7 +15,7 @@ public class PetVaccination {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "vaccination_id")
     private Vaccination vaccination;
     @Column(name = "vaccination_name")

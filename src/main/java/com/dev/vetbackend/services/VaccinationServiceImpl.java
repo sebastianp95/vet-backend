@@ -121,11 +121,15 @@ public class VaccinationServiceImpl implements VaccinationService {
     }
 
     private PetVaccinationDTO convertToDTO(PetVaccination petVaccination) {
-        // Assuming you have a constructor or setter methods to set all the properties for PetVaccinationDTO
         PetVaccinationDTO dto = new PetVaccinationDTO();
         dto.setId(petVaccination.getId());
         dto.setPetId(petVaccination.getPet().getId());
-        dto.setVaccinationId(petVaccination.getVaccination().getId());
+
+        // Check if vaccination is null before trying to get its ID
+        Long vaccinationId = petVaccination.getVaccination() != null ?
+                petVaccination.getVaccination().getId() : null;
+        dto.setVaccinationId(vaccinationId);
+
         dto.setVaccinationName(petVaccination.getVaccinationName());
         dto.setVaccinationType(petVaccination.getVaccinationType());
         dto.setDate(petVaccination.getDate());
@@ -133,26 +137,28 @@ public class VaccinationServiceImpl implements VaccinationService {
         return dto;
     }
 
+
     private PetVaccination convertToEntity(PetVaccinationDTO petVaccinationDTO) {
         PetVaccination petVaccination = new PetVaccination();
 
         petVaccination.setId(petVaccinationDTO.getId());
-
-        // Fetch the Pet entity by ID
-        Pet pet = petRepository.findById(petVaccinationDTO.getPetId())
-                .orElseThrow(() -> new EntityNotFoundException("Pet not found"));
-        petVaccination.setPet(pet);
-
-        // Fetch the Vaccination entity by ID
-        Vaccination vaccination = repository.findById(petVaccinationDTO.getVaccinationId())
-                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found"));
-        petVaccination.setVaccination(vaccination);
-
+        petVaccination.setPet(fetchPet(petVaccinationDTO.getPetId()));
+        petVaccination.setVaccination(fetchVaccination(petVaccinationDTO.getVaccinationId()));
         petVaccination.setVaccinationName(petVaccinationDTO.getVaccinationName());
         petVaccination.setVaccinationType(petVaccinationDTO.getVaccinationType());
         petVaccination.setDate(petVaccinationDTO.getDate());
 
         return petVaccination;
+    }
+
+    private Pet fetchPet(Long petId) {
+        return petRepository.findById(petId)
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found"));
+    }
+
+    private Vaccination fetchVaccination(Long vaccinationId) {
+        return vaccinationId == null ? null : repository.findById(vaccinationId)
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found"));
     }
 
 }

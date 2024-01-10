@@ -72,7 +72,7 @@ public class CalendarServiceImpl implements CalendarService {
     private void sendNotifications(AppointmentDTO appointmentDTO) {
         if (appointmentDTO.getPhoneNumber() != null && !appointmentDTO.getPhoneNumber().isEmpty() && appointmentDTO.isSendSMS()) {
             String message = buildMessage(appointmentDTO);
-            twilioService.sendMessage(appointmentDTO.getPhoneNumber(), message);
+            twilioService.sendMessage(appointmentDTO.getCountryCode()+appointmentDTO.getPhoneNumber(), message);
         }
 
         if (appointmentDTO.getEmail() != null && !appointmentDTO.getEmail().isEmpty() && appointmentDTO.isSendEmail()) {
@@ -189,6 +189,7 @@ public class CalendarServiceImpl implements CalendarService {
                     } catch (IllegalArgumentException e) {
                         throw new CustomException("Invalid reason provided");
                     }
+                    appointment.setCountryCode(newAppointmentDTO.getCountryCode());
                     appointment.setPhoneNumber(newAppointmentDTO.getPhoneNumber());
                     appointment.setDate(newAppointmentDTO.getDate());
                     appointment.setEmail(newAppointmentDTO.getEmail());
@@ -219,6 +220,7 @@ public class CalendarServiceImpl implements CalendarService {
         Appointment appointment = new Appointment();
         appointment.setPetName(appointmentDTO.getPetName());
         appointment.setReason(Reason.valueOf(appointmentDTO.getReason()));
+        appointment.setCountryCode(appointmentDTO.getCountryCode());
         appointment.setPhoneNumber(appointmentDTO.getPhoneNumber());
         appointment.setEmail(appointmentDTO.getEmail());
         appointment.setPetOwnerName(appointmentDTO.getPetOwnerName());

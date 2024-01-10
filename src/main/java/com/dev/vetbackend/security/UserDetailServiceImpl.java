@@ -30,9 +30,9 @@ import java.util.Optional;
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private SeedDataUtil seedDataUtil;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final SeedDataUtil seedDataUtil;
 
     @Autowired
     public UserDetailServiceImpl(

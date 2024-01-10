@@ -1,21 +1,25 @@
 package com.dev.vetbackend.controller;
 
 
+import com.dev.vetbackend.dto.AuthCredentialsDTO;
 import com.dev.vetbackend.dto.EmailRequest;
 import com.dev.vetbackend.dto.ResetPasswordRequest;
 import com.dev.vetbackend.entity.User;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
+import com.dev.vetbackend.services.AuthService;
 import com.dev.vetbackend.services.EmailSenderService;
-import lombok.AllArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
 
-    private UserDetailServiceImpl userDetailService;
+    private final UserDetailServiceImpl userDetailService;
+    private final AuthService authService;
     private final EmailSenderService emailSenderService;
 
     @PostMapping("/register")
@@ -27,6 +31,15 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticate(@RequestBody AuthCredentialsDTO authCredentials, HttpServletResponse response) {
+        String token = authService.authenticate(authCredentials);
+//      response.setHeader("Authorization", "Bearer " + token);
+        response.setHeader("Authorization", token);
+        return ResponseEntity.ok().build(); // or return any other appropriate response
+    }
+
 
     @PutMapping("/user/update/{id}")
     public ResponseEntity<?> update(@RequestBody User newUserInfo, @PathVariable Long id) {
