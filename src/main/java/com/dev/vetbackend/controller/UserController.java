@@ -4,6 +4,8 @@ package com.dev.vetbackend.controller;
 import com.dev.vetbackend.dto.AuthCredentialsDTO;
 import com.dev.vetbackend.dto.EmailRequest;
 import com.dev.vetbackend.dto.ResetPasswordRequest;
+import com.dev.vetbackend.dto.SubscriptionStatusDTO;
+import com.dev.vetbackend.dto.UserDTO;
 import com.dev.vetbackend.entity.User;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
 import com.dev.vetbackend.services.AuthService;
@@ -12,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api")
@@ -50,12 +54,22 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
     @GetMapping("/user")
-    public ResponseEntity<?> getUser() {
+    public ResponseEntity<?> getUser(Principal principal) {
         try {
-            return ResponseEntity.ok(userDetailService.getAuthenticatedUserDTO());
+            UserDTO userDTO = userDetailService.fetchAuthenticatedUserDTO(principal);
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/user/subscription-status")
+    public ResponseEntity<?> getUserSubscriptionStatus(Principal principal) {
+        try {
+            SubscriptionStatusDTO subscriptionStatus = userDetailService.fetchUserSubscriptionStatus(principal);
+            return ResponseEntity.ok(subscriptionStatus);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

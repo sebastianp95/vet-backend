@@ -1,6 +1,7 @@
 package com.dev.vetbackend.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,9 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("${swagger.enabled:false}")
+    private boolean swaggerEnabled;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
+
 
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService,
@@ -41,14 +45,14 @@ public class SecurityConfig {
         http
                 .cors().and()
                 .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/register").permitAll()
-                .requestMatchers("/api/login").permitAll()
-                .requestMatchers("/stripe-webhook").permitAll()
-                .requestMatchers("/api/send_recovery_email").permitAll()
-                .requestMatchers("/api/reset_password").permitAll()
-                .anyRequest().authenticated()
-                .and()
+                .authorizeHttpRequests((authz) -> {
+                    authz.requestMatchers("/api/register", "/api/login","/api/send_recovery_email", "/api/reset_password").permitAll();
+                    authz.requestMatchers("/stripe-webhook").permitAll();
+                    if (swaggerEnabled) {
+                        authz.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll();
+                    }
+                    authz.anyRequest().authenticated();
+                })
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
