@@ -2,6 +2,7 @@ package com.dev.vetbackend.security;
 
 
 import com.dev.vetbackend.constants.ProductType;
+import com.dev.vetbackend.dto.SubscriptionStatusDTO;
 import com.dev.vetbackend.dto.UserDTO;
 import com.dev.vetbackend.entity.*;
 import com.dev.vetbackend.exception.CustomException;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,26 +57,20 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return new UserDetailsImpl(user);
 
     }
-
-    public UserDTO getAuthenticatedUserDTO() {
-        User user = getAuthenticatedUser();
-        return mapToDTO(user);
-    }
-
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = loadUserByUsername(principal.toString());
-//        map UserDetails to User
-        User user = null;
-        try {
-            Field userField = UserDetailsImpl.class.getDeclaredField("user");
-            userField.setAccessible(true);
-            user = (User) userField.get(userDetails);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return user;
+        String userEmail = authentication.getName();
+        return userRepository.findOneByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+    public UserDTO fetchAuthenticatedUserDTO(Principal principal) {
+        String userEmail = principal.getName();
+
+        User user = userRepository
+                .findOneByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario con email: " + userEmail + " no existe"));
+
+        return mapToDTO(user);
     }
 
     public void registerNewUser(String email, String password, String name, String language) throws Exception {
@@ -134,6 +130,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public void deleteUser(Long id) {
         userRepository.deleteById(Math.toIntExact(id));
     }
+
     private UserDTO mapToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
@@ -144,6 +141,20 @@ public class UserDetailServiceImpl implements UserDetailsService {
         dto.setSecondEmail(user.getSecondEmail());
         dto.setPhone(user.getPhone());
         return dto;
+    }
+
+    public SubscriptionStatusDTO fetchUserSubscriptionStatus(Principal principal) {
+        String userEmail = principal.getName();
+
+        User user = userRepository
+                .findOneByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario con email: " + userEmail + " no existe"));
+
+
+        SubscriptionStatusDTO subscriptionStatus = new SubscriptionStatusDTO();
+        subscriptionStatus.setStatus(user.getStatus());
+
+        return subscriptionStatus;
     }
 
 }
