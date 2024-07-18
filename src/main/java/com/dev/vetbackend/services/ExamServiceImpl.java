@@ -6,6 +6,7 @@ import com.dev.vetbackend.entity.User;
 import com.dev.vetbackend.repository.ExamRepository;
 import com.dev.vetbackend.repository.PetRepository;
 import com.dev.vetbackend.security.UserDetailServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ExamServiceImpl implements ExamService{
 
     @Autowired
     private ExamRepository examRepository;
     @Autowired
     private PetRepository petRepository;
-
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
 
@@ -52,7 +53,7 @@ public class ExamServiceImpl implements ExamService{
         Exam existingExam = findById(id);
         existingExam.setDate(exam.getDate());
         existingExam.setType(exam.getType());
-        existingExam.setFileUrl(exam.getFileUrl());
+        existingExam.setFileKey(exam.getFileKey());
         existingExam.setExtension(exam.getExtension());
         return examRepository.save(existingExam);
     }
