@@ -103,6 +103,12 @@
             <artifactId>twilio</artifactId>
             <version>9.5.0</version>
         </dependency>
+        <!-- AWS-->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.12.118</version>
+        </dependency>
 
         <!-- Test-->
         <dependency>
