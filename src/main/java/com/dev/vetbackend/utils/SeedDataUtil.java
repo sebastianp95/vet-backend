@@ -110,15 +110,15 @@ public class SeedDataUtil {
 
         List<Vaccination> seedListVaccination = Arrays.asList(
                 // Dog Vaccines
-                new Vaccination(rabies, 10000L, 5000L, "Zoetis", 6, "Dog", "vaccine", "https://..."),
-                new Vaccination(distemper, 12000L, 6000L, "Merck Animal Health", 6, "Dog", "vaccine", null),
+                new Vaccination(rabies, 10000L, 5000L, "Zoetis", 6, "Dog", "vaccine", "https://res.cloudinary.com/dgghss1d9/image/upload/v1725726626/vetpics/ylztnwewy9oqukgcbqpw.jpg"),
+                new Vaccination(distemper, 12000L, 6000L, "Merck Animal Health", 6, "Dog", "vaccine", "https://res.cloudinary.com/dgghss1d9/image/upload/v1725726626/vetpics/ylztnwewy9oqukgcbqpw.jpg"),
                 new Vaccination(parvovirus, 9000L, 4500L, "Boehringer Ingelheim", 12, "Dog", "vaccine", null),
                 new Vaccination(bordetella, 8000L, 4000L, "Zoetis", 8, "Dog", "vaccine", null),
                 // Dog Vermifuges
                 new Vaccination(drontalPlus, 5000L, 2500L, "Bayer Animal Health", 10, "Dog", "vermifuge", null),
                 new Vaccination(interceptor, 4000L, 2000L, "Elanco", 8, "Dog", "vermifuge", null),
                 // Cat Vaccines
-                new Vaccination(felineHerpesvirus, 11000L, 5500L, "Zoetis", 10, "Cat", "vaccine", "https://..."),
+                new Vaccination(felineHerpesvirus, 11000L, 5500L, "Zoetis", 10, "Cat", "vaccine", "https://res.cloudinary.com/dgghss1d9/image/upload/v1725726626/vetpics/ylztnwewy9oqukgcbqpw.jpg"),
                 new Vaccination(felineCalicivirus, 10000L, 5000L, "Merck Animal Health", 15, "Cat", "vaccine", null),
                 new Vaccination(felineLeukemia, 13000L, 6500L, "Boehringer Ingelheim", 7, "Cat", "vaccine", null),
                 // Cat Vermifuges
