@@ -3,6 +3,7 @@ public enum Species {
     DOG,
     CAT,
     BIRD,
-    RABBIT
+    RABBIT,
+    ALL
 }
 
