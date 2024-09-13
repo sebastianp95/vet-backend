@@ -194,6 +194,7 @@ public class CalendarServiceImpl implements CalendarService {
                     appointment.setDate(newAppointmentDTO.getDate());
                     appointment.setEmail(newAppointmentDTO.getEmail());
                     appointment.setPetOwnerName(newAppointmentDTO.getPetOwnerName());
+                    appointment.setNotes(newAppointmentDTO.getNotes());
 
                     Appointment updatedAppointment = repository.save(appointment);
                     if (updatedAppointment == null) {
@@ -225,6 +226,8 @@ public class CalendarServiceImpl implements CalendarService {
         appointment.setEmail(appointmentDTO.getEmail());
         appointment.setPetOwnerName(appointmentDTO.getPetOwnerName());
         appointment.setDate(appointmentDTO.getDate());
+        appointment.setNotes(appointmentDTO.getNotes());
+
 
         return appointment;
     }

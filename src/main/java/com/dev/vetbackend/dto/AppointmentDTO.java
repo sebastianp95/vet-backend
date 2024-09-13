@@ -17,5 +17,6 @@ public class AppointmentDTO {
     private String petOwnerName;
     private LocalDateTime date;
     private String language;
+    private String notes;
 
 }

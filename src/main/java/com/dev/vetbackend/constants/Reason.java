@@ -5,6 +5,8 @@ public enum Reason {
     CONTROL_APPOINTMENT("ControlAppointment"),
     DAYCARE("Daycare"),
     HAIRDRESSER("Hairdresser"),
+    GROOMING("Grooming"),
+    BATH("Bath"),
     LABORATORY_TESTS("LaboratoryTests"),
     DERMATOLOGY("Dermatology"),
     CARDIOLOGY("Cardiology"),

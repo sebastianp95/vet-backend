@@ -36,4 +36,6 @@ public class Appointment {
     @JsonIgnore
     @ManyToOne(optional = false)
     private User user;
+    @Column(name = "notes", length = 500)
+    private String notes;
 }
