@@ -90,7 +90,7 @@ public class PetControllerTest {
     public void testCreatePet() throws Exception {
         Pet newPet = new Pet();
         newPet.setName("Buddy");
-        newPet.setOwnerId(1L); // Set other necessary properties
+        newPet.setOwnerId("12"); // Set other necessary properties
 
         Pet savedPet = new Pet();
         savedPet.setId(1L); // Simulate the pet being saved with an ID
