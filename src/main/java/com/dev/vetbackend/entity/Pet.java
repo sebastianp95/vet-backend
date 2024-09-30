@@ -28,13 +28,16 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String ownerName;
+    private String ownerEmail;
+    private String ownerPhone;
+    private String ownerId;
     @Enumerated(EnumType.STRING)
     private Species species;
     @Pattern(regexp = "(M|F)")
     private String gender;
-    private String ownerName;
-    private String ownerEmail;
-    private Long ownerId;
+    private String furColor;    
+    private String microchip;
     private String breed;
     private int age;
     private int weight;

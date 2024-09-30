@@ -48,7 +48,7 @@ public class SeedDataUtil {
         newPet.setGender("M");
         newPet.setOwnerName("John Doe");
         newPet.setOwnerEmail("johndoe@example.com");
-        newPet.setOwnerId(4046223334L);
+        newPet.setOwnerPhone("4046223334");
         newPet.setReproductiveStatus(ReproductiveStatus.NEUTERED);
         newPet.setUser(user);
         newPet.setWeight(22);
@@ -63,9 +63,6 @@ public class SeedDataUtil {
         String formattedDate = currentDate.format(formatter);
 
         medicalHistory.setDateOfVisit(formattedDate);
-        medicalHistory.setCurrentMedications(Collections.emptyList());
-        medicalHistory.setKnownAllergies(Collections.emptyList());
-        medicalHistory.setPreviousSurgeriesOrIllness(Collections.emptyList());
         if ("es".equals(lng)) {
             medicalHistory.setReasonForVisit("Chequeo de rutina");
             medicalHistory.setVeterinarianObservations("La mascota está en buen estado de salud");

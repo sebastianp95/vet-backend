@@ -68,7 +68,7 @@ public class PetServiceImpl implements PetService {
         }
 
         if (ownerPhone != null) {
-            predicates.add(cb.like(pet.get("ownerId").as(String.class), "%" + ownerPhone + "%"));
+            predicates.add(cb.like(pet.get("ownerPhone").as(String.class), "%" + ownerPhone + "%"));
         }
 
 
@@ -116,6 +116,9 @@ public class PetServiceImpl implements PetService {
                     pet.setOwnerId(newPet.getOwnerId());
                     pet.setOwnerName(newPet.getOwnerName());
                     pet.setOwnerEmail(newPet.getOwnerEmail());
+                    pet.setOwnerPhone(newPet.getOwnerPhone());
+                    pet.setMicrochip(newPet.getMicrochip());
+                    pet.setFurColor(newPet.getFurColor());
                     pet.setWeight(newPet.getWeight());
                     pet.setImageSrc(newPet.getImageSrc());
 
